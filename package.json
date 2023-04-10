@@ -1,0 +1,23 @@
+{
+  "name": "brigandyne-v2-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "db:create": "psql -U brigandyne -d brigandyne2 -f ./data/create_db.sql",
+    "db:populate": "psql -U brigandyne -d brigandyne2 -f ./data/populate_db.sql",
+    "db:reset": "npm run db:create && npm run db:populate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KGouerec/Brigandyne-V2-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KGouerec/Brigandyne-V2-API/issues"
+  },
+  "homepage": "https://github.com/KGouerec/Brigandyne-V2-API#readme"
+}

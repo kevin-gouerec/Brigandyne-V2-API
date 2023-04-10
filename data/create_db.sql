@@ -1,10 +1,11 @@
 BEGIN;
 
-DROP TABLE IF EXISTS "character", "skill", "folk", "archetype", "career", "speciality", "talent", "motivation", "spell", "magic_field", "magic_trick", "personnality";
+DROP TABLE IF EXISTS "character", "skill", "folk", "archetype", "career","group_career", "speciality", "talent", "motivation", "spell", "magic_field", "magic_trick", "personnality", "character_has_speciality", "character_has_talent", "character_has_career", "character_has_skill", "character_has_personnality", "archetype_modify_personnality", "archetype_modify_skill", "archetype_access_talent", "folk_has_talent","folk_modify_skill", "career_access_speciality","folk_has_speciality", "career_access_talent";
 
 CREATE TABLE "skill" (
   "id" INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "name" TEXT NOT NULL DEFAULT '',
+  "short_name" TEXT NOT NULL DEFAULT '',  
   "description" TEXT NOT NULL DEFAULT '',
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "updated_at" TIMESTAMPTZ
@@ -76,7 +77,8 @@ CREATE TABLE "personnality" (
   "description" TEXT NOT NULL DEFAULT '',
   "adventure" TEXT NOT NULL DEFAULT '',
   "madness" TEXT NOT NULL DEFAULT '',
-  "link_id" INTEGER,
+  "type" TEXT NOT NULL DEFAULT '',
+  "link_id" INTEGER NOT NULL,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "updated_at" TIMESTAMPTZ
 );
@@ -89,12 +91,22 @@ CREATE TABLE "archetype" (
   "updated_at" TIMESTAMPTZ
 );
 
+CREATE TABLE "group_career" (
+  "id" INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "name" TEXT NOT NULL DEFAULT '',
+  "description" TEXT NOT NULL DEFAULT '',
+  "starting_stuff" TEXT NOT NULL DEFAULT '',    
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updated_at" TIMESTAMPTZ
+);
+
 CREATE TABLE "career" (
   "id" INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "name" TEXT NOT NULL DEFAULT '',
-  "group" TEXT NOT NULL DEFAULT '',
+  "group_id" INTEGER NOT NULL REFERENCES group_career("id") ON DELETE CASCADE,
   "description" TEXT NOT NULL DEFAULT '',
   "income" TEXT NOT NULL DEFAULT '',
+  "starting_stuff" TEXT NOT NULL DEFAULT '',   
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "updated_at" TIMESTAMPTZ
 );
@@ -102,7 +114,7 @@ CREATE TABLE "career" (
 CREATE TABLE "folk" (
   "id" INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "name" TEXT NOT NULL DEFAULT '',
-  "description" TEXT NOT NULL DEFAULT '',
+  "description" TEXT NOT NULL DEFAULT '',  
   "special" TEXT NOT NULL DEFAULT '',
   "fate" INTEGER NOT NULL DEFAULT 0,  
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -170,7 +182,7 @@ CREATE TABLE "character_has_personnality" (
 CREATE TABLE "archetype_modify_personnality" (
   "archetype_id" INTEGER NOT NULL REFERENCES archetype("id") ON DELETE CASCADE,
   "personnality_id" INTEGER NOT NULL REFERENCES personnality("id") ON DELETE CASCADE,
-  "modifier" INTEGER NOT NULL DEFAULT 0,
+  "choice" INTEGER NOT NULL DEFAULT 0,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -178,12 +190,25 @@ CREATE TABLE "archetype_modify_skill" (
   "archetype_id" INTEGER NOT NULL REFERENCES archetype("id") ON DELETE CASCADE,
   "skill_id" INTEGER NOT NULL REFERENCES skill("id") ON DELETE CASCADE,
   "modifier" INTEGER NOT NULL DEFAULT 0,
+  "choice" INTEGER NOT NULL DEFAULT 0,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "archetype_access_talent" (
   "archetype_id" INTEGER NOT NULL REFERENCES archetype("id") ON DELETE CASCADE,
   "talent_id" INTEGER NOT NULL REFERENCES talent("id") ON DELETE CASCADE,
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE "folk_has_talent" (
+  "folk_id" INTEGER NOT NULL REFERENCES folk("id") ON DELETE CASCADE,
+  "talent_id" INTEGER NOT NULL REFERENCES talent("id") ON DELETE CASCADE, 
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE "folk_has_speciality" (
+  "folk_id" INTEGER NOT NULL REFERENCES folk("id") ON DELETE CASCADE,
+  "speciality_id" INTEGER NOT NULL REFERENCES speciality("id") ON DELETE CASCADE, 
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
