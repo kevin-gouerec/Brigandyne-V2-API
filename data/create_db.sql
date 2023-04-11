@@ -223,12 +223,14 @@ CREATE TABLE "folk_modify_skill" (
 CREATE TABLE "career_access_speciality" (
   "career_id" INTEGER NOT NULL REFERENCES career("id") ON DELETE CASCADE,
   "speciality_id" INTEGER NOT NULL REFERENCES speciality("id") ON DELETE CASCADE,
+  "choice" INTEGER,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "career_access_talent" (
   "career_id" INTEGER NOT NULL REFERENCES career("id") ON DELETE CASCADE,
   "talent_id" INTEGER NOT NULL REFERENCES talent("id") ON DELETE CASCADE,
+  "choice" INTEGER,  
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
